@@ -1,7 +1,10 @@
-import 'dotenv/config';
 import { Test, TestingModule } from '@nestjs/testing';
+import 'dotenv/config';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
+
+// test constants
+process.env.MONGO_URI = 'mongodb://localhost/nest_test';
 
 describe('AppController (e2e)', () => {
   let app;
