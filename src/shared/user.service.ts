@@ -14,8 +14,8 @@ export class UserService {
   }
 
   async findByLogin(userDTO: LoginDTO) {
-    const { username, password } = userDTO;
-    return await this.userModel.findOne({ username, password });
+    const { username } = userDTO;
+    return await this.userModel.findOne({ username });
   }
 
   // TODO this method is for development only, remove later
