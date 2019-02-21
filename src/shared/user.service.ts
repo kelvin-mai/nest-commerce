@@ -35,6 +35,11 @@ export class UserService {
     }
   }
 
+  async findByPayload(payload: any) {
+    const { username } = payload;
+    return await this.userModel.findOne({ username });
+  }
+
   // TODO this method is for development only, remove later
   async findAll() {
     return await this.userModel.find().exec();
