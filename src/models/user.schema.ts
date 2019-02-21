@@ -34,14 +34,3 @@ UserSchema.pre('save', async function(next: mongoose.HookNextFunction) {
     return next(err);
   }
 });
-
-UserSchema.methods.comparePassword = async function(
-  attempt: string,
-  next: mongoose.HookNextFunction,
-) {
-  try {
-    return await bcrypt.compare(attempt, this.password);
-  } catch (err) {
-    return next(err);
-  }
-};
