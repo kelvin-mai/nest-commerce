@@ -1,32 +1,63 @@
 import { HttpStatus } from '@nestjs/common';
 import 'dotenv/config';
+import * as mongoose from 'mongoose';
 import * as request from 'supertest';
+import { RegisterDTO } from '../src/auth/auth.dto';
 
-// test constants
-process.env.MONGO_URI = 'mongodb://localhost/nest_test';
+let app = 'http://localhost:3000';
 
-describe('AppController (e2e)', () => {
-  let app = 'http://localhost:3000';
+beforeAll(async () => {
+  await mongoose.connect(process.env.MONGO_URI);
+  await mongoose.connection.db.dropDatabase();
+});
 
-  // beforeEach(async () => {
-  //   const moduleFixture: TestingModule = await Test.createTestingModule({
-  //     imports: [AppModule],
-  //   }).compile();
+afterAll(async done => {
+  await mongoose.disconnect(done);
+});
 
-  //   app = moduleFixture.createNestApplication();
-  //   await app.init();
-  // });
-
-  it('/ (GET)', () => {
+describe('ROOT', () => {
+  it('should ping', () => {
     return request(app)
       .get('/')
       .expect(200)
       .expect('Hello World!');
   });
+});
 
-  it('/auth (GET)', () => {
+describe('AUTH', () => {
+  it('should register user', () => {
+    const user: RegisterDTO = {
+      username: 'username',
+      password: 'password',
+    };
+
     return request(app)
-      .get('/auth')
-      .expect(HttpStatus.UNAUTHORIZED);
+      .post('/auth/register')
+      .set('Accept', 'application/json')
+      .send(user)
+      .expect(({ body }) => {
+        console.log(body);
+        expect(body.token).toBeDefined();
+        expect(body.user.username).toEqual('username');
+        expect(body.password).toBeUndefined();
+      })
+      .expect(HttpStatus.CREATED);
+  });
+
+  it('should reject duplicate registration', () => {
+    const user: RegisterDTO = {
+      username: 'username',
+      password: 'password',
+    };
+
+    return request(app)
+      .post('/auth/register')
+      .set('Accept', 'application/json')
+      .send(user)
+      .expect(({ body }) => {
+        console.log(body);
+        expect(body.message).toEqual('User already exists');
+      })
+      .expect(HttpStatus.BAD_REQUEST);
   });
 });

@@ -12,7 +12,7 @@ export class UserService {
 
   async create(userDTO: RegisterDTO) {
     const { username } = userDTO;
-    const user = this.userModel.findOne({ username });
+    const user = await this.userModel.findOne({ username });
     if (user) {
       throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
     }
