@@ -2,7 +2,7 @@ import { HttpStatus } from '@nestjs/common';
 import 'dotenv/config';
 import * as mongoose from 'mongoose';
 import * as request from 'supertest';
-import { RegisterDTO } from '../src/auth/auth.dto';
+import { LoginDTO, RegisterDTO } from '../src/auth/auth.dto';
 
 let app = 'http://localhost:3000';
 
@@ -59,5 +59,23 @@ describe('AUTH', () => {
         expect(body.message).toEqual('User already exists');
       })
       .expect(HttpStatus.BAD_REQUEST);
+  });
+
+  it('should login', () => {
+    const user: LoginDTO = {
+      username: 'username',
+      password: 'password',
+    };
+
+    return request(app)
+      .post('/auth/login')
+      .set('Accept', 'application/json')
+      .send(user)
+      .expect(({ body }) => {
+        expect(body.token).toBeDefined();
+        expect(body.user.username).toEqual('username');
+        expect(body.user.password).toBeUndefined();
+      })
+      .expect(HttpStatus.CREATED);
   });
 });
