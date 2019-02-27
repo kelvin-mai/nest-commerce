@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { SellerGuard } from 'src/guards/seller.guard';
 import { UserService } from 'src/shared/user.service';
 import { Payload } from 'src/types/payload';
 import { LoginDTO, RegisterDTO } from './auth.dto';
@@ -14,7 +15,7 @@ export class AuthController {
 
   // TODO this route is for development only, remove later
   @Get()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'), SellerGuard)
   async findAll() {
     return await this.userService.findAll();
   }

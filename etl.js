@@ -2,9 +2,10 @@ const axios = require('axios');
 
 (async () => {
   try {
-    const { data } = await axios.post('http://localhost:3000/auth/login', {
-      username: 'kelvin2',
+    const { data } = await axios.post('http://localhost:3000/auth/register', {
+      username: 'kelvin',
       password: 'password',
+      seller: true,
     });
     console.log(data);
 
