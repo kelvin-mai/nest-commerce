@@ -41,11 +41,6 @@ export class UserService {
     return await this.userModel.findOne({ username });
   }
 
-  // TODO this method is for development only, remove later
-  async findAll() {
-    return await this.userModel.find().exec();
-  }
-
   sanitizeUser(user: User) {
     return user.depopulate('password');
   }
