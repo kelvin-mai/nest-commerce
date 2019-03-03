@@ -3,10 +3,10 @@ import 'dotenv/config';
 import * as mongoose from 'mongoose';
 import * as request from 'supertest';
 import { LoginDTO, RegisterDTO } from '../src/auth/auth.dto';
-import { app } from './constants';
+import { app, database } from './constants';
 
 beforeAll(async () => {
-  await mongoose.connect(process.env.MONGO_URI);
+  await mongoose.connect(database);
   await mongoose.connection.db.dropDatabase();
 });
 
@@ -101,5 +101,13 @@ describe('AUTH', () => {
         expect(body.user.password).toBeUndefined();
         expect(body.user.seller).toBeTruthy();
       });
+  });
+
+  it('should respect seller token', () => {
+    return request(app)
+      .get('/product/mine')
+      .set('Accept', 'application/json')
+      .set('Authorization', `Bearer ${sellerToken}`)
+      .expect(200);
   });
 });
