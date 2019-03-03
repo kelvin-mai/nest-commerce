@@ -6,8 +6,13 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { SellerGuard } from 'src/guards/seller.guard';
 import { Product } from 'src/types/product';
+import { User as UserDocument } from 'src/types/user';
+import { User } from 'src/utilities/user.decorator';
 import { CreateProductDTO, UpdateProductDTO } from './product.dto';
 import { ProductService } from './product.service';
 
@@ -16,13 +21,29 @@ export class ProductController {
   constructor(private productService: ProductService) {}
 
   @Get()
-  async list(): Promise<Product[]> {
+  async listAll(): Promise<Product[]> {
     return await this.productService.findAll();
   }
 
+  @Get('/mine')
+  @UseGuards(AuthGuard('jwt'), SellerGuard)
+  async listMine(@User() user: UserDocument): Promise<Product[]> {
+    const { id } = user;
+    return await this.productService.findByOwner(id);
+  }
+
+  @Get('/seller/:id')
+  async listBySeller(@Param('id') id: string): Promise<Product[]> {
+    return await this.productService.findByOwner(id);
+  }
+
   @Post()
-  async create(@Body() product: CreateProductDTO): Promise<Product> {
-    return await this.productService.create(product);
+  @UseGuards(AuthGuard('jwt'), SellerGuard)
+  async create(
+    @Body() product: CreateProductDTO,
+    @User() user: UserDocument,
+  ): Promise<Product> {
+    return await this.productService.create(product, user);
   }
 
   @Get(':id')
@@ -31,6 +52,7 @@ export class ProductController {
   }
 
   @Put(':id')
+  @UseGuards(AuthGuard('jwt'), SellerGuard)
   async update(
     @Param('id') id: string,
     @Body() product: UpdateProductDTO,
@@ -39,6 +61,7 @@ export class ProductController {
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard('jwt'), SellerGuard)
   async delete(@Param('id') id: string): Promise<Product> {
     return await this.productService.delete(id);
   }

@@ -1,5 +1,4 @@
 import { Document } from 'mongoose';
-
 import { User } from './user';
 
 export interface Product extends Document {
@@ -7,6 +6,6 @@ export interface Product extends Document {
   title: string;
   image: string;
   description: string;
-  number: number;
+  price: number;
   created: Date;
 }

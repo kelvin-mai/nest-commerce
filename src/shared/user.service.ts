@@ -24,7 +24,9 @@ export class UserService {
 
   async findByLogin(userDTO: LoginDTO) {
     const { username, password } = userDTO;
-    const user = await this.userModel.findOne({ username });
+    const user = await this.userModel
+      .findOne({ username })
+      .select('username password seller created address');
     if (!user) {
       throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
     }

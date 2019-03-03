@@ -5,7 +5,7 @@ export const UserSchema = new mongoose.Schema({
   username: String,
   password: {
     type: String,
-    select: true,
+    select: false,
   },
   seller: {
     type: Boolean,
