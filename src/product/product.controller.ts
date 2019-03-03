@@ -56,13 +56,19 @@ export class ProductController {
   async update(
     @Param('id') id: string,
     @Body() product: UpdateProductDTO,
+    @User() user: UserDocument,
   ): Promise<Product> {
-    return await this.productService.update(id, product);
+    const { id: userId } = user;
+    return await this.productService.update(id, product, userId);
   }
 
   @Delete(':id')
   @UseGuards(AuthGuard('jwt'), SellerGuard)
-  async delete(@Param('id') id: string): Promise<Product> {
-    return await this.productService.delete(id);
+  async delete(
+    @Param('id') id: string,
+    @User() user: UserDocument,
+  ): Promise<Product> {
+    const { id: userId } = user;
+    return await this.productService.delete(id, userId);
   }
 }
