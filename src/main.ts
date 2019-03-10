@@ -1,5 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import 'dotenv/config';
+import { join } from 'path';
 import { AppModule } from './app.module';
 
 if (process.env.NODE_ENV === 'test') {
@@ -10,6 +11,7 @@ if (process.env.NODE_ENV === 'test') {
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.useStaticAssets(join(__dirname, './uploads'));
   app.setGlobalPrefix('api');
   await app.listen(process.env.PORT);
 }
