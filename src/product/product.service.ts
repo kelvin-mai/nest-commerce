@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Product } from 'src/types/product';
@@ -18,7 +18,11 @@ export class ProductService {
   }
 
   async findById(id: string): Promise<Product> {
-    return await this.productModel.findById(id).populate('owner');
+    const product = await this.productModel.findById(id).populate('owner');
+    if (!product) {
+      throw new HttpException('Product not found', HttpStatus.NO_CONTENT);
+    }
+    return product;
   }
 
   async create(productDTO: CreateProductDTO, user: User): Promise<Product> {
@@ -30,14 +34,30 @@ export class ProductService {
     return product.populate('owner');
   }
 
-  async update(id: string, productDTO: UpdateProductDTO): Promise<Product> {
+  async update(
+    id: string,
+    productDTO: UpdateProductDTO,
+    userId: string,
+  ): Promise<Product> {
     const product = await this.productModel.findById(id);
+    if (userId !== product.owner.toString()) {
+      throw new HttpException(
+        'You do not own this product',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
     await product.update(productDTO);
-    return product.populate('owner');
+    return await this.productModel.findById(id).populate('owner');
   }
 
-  async delete(id: string): Promise<Product> {
+  async delete(id: string, userId: string): Promise<Product> {
     const product = await this.productModel.findById(id);
+    if (userId !== product.owner.toString()) {
+      throw new HttpException(
+        'You do not own this product',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
     await product.remove();
     return product.populate('owner');
   }
