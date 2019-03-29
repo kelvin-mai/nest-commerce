@@ -1,5 +1,6 @@
-import { Product } from 'src/types/product';
-
 export interface CreateOrderDTO {
-  products: Product[];
+  products: {
+    product: string;
+    quantity: number;
+  }[];
 }

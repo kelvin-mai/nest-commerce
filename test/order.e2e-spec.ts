@@ -70,7 +70,7 @@ describe('ORDER', () => {
     };
 
     return request(app)
-      .post('order')
+      .post('/order')
       .set('Authorization', `Bearer ${buyerToken}`)
       .set('Accept', 'application/json')
       .send(orderDTO)
@@ -80,7 +80,7 @@ describe('ORDER', () => {
         expect(
           boughtProducts
             .map(product => product._id)
-            .includes(body.products[0]._id),
+            .includes(body.products[0].product._id),
         ).toBeTruthy();
         expect(body.totalPrice).toEqual(
           boughtProducts.reduce((acc, i) => acc + i.price, 0),
@@ -91,7 +91,7 @@ describe('ORDER', () => {
 
   it('should list all orders of buyer', () => {
     return request(app)
-      .get('order')
+      .get('/order')
       .set('Authorization', `Bearer ${buyerToken}`)
       .expect(({ body }) => {
         expect(body.length).toEqual(1);
@@ -99,8 +99,11 @@ describe('ORDER', () => {
         expect(
           boughtProducts
             .map(product => product._id)
-            .includes(body[0].products[0]._id),
+            .includes(body[0].products[0].product._id),
         ).toBeTruthy();
+        expect(body[0].totalPrice).toEqual(
+          boughtProducts.reduce((acc, i) => acc + i.price, 0),
+        );
       })
       .expect(200);
   });
