@@ -12,11 +12,6 @@ export class AuthController {
     private authService: AuthService,
   ) {}
 
-  @Get()
-  temp() {
-    return this.userService.find();
-  }
-
   @Post('login')
   async login(@Body() userDTO: LoginDTO) {
     const user = await this.userService.findByLogin(userDTO);
