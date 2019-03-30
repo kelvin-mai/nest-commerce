@@ -9,10 +9,11 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { SellerGuard } from 'src/guards/seller.guard';
-import { Product } from 'src/types/product';
-import { User as UserDocument } from 'src/types/user';
-import { User } from 'src/utilities/user.decorator';
+
+import { SellerGuard } from '../guards/seller.guard';
+import { Product } from '../types/product';
+import { User as UserDocument } from '../types/user';
+import { User } from '../utilities/user.decorator';
 import { CreateProductDTO, UpdateProductDTO } from './product.dto';
 import { ProductService } from './product.service';
 
