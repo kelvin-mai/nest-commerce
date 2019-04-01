@@ -1,0 +1,13 @@
+runtime: nodejs10
+
+env_variables:
+  PORT: 8080
+  SECRET_KEY: 'secret'
+  MONGO_URI: 'mongodb+srv://admin:<password>@nestcommerce-um1l0.gcp.mongodb.net/test?retryWrites=true'
+
+manual_scaling:
+  instances: 1
+resources:
+  cpu: 1
+  memory_gb: 0.5
+  disk_size_gb: 10
