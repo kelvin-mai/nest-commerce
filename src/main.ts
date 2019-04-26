@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import 'dotenv/config';
 import * as Express from 'express';
+import * as cors from 'cors';
 
 import { AppModule } from './app.module';
 
@@ -12,7 +13,7 @@ if (process.env.NODE_ENV === 'test') {
 }
 
 const server = Express();
-
+server.use(cors());
 server.get('/', (req, res) => res.send('ok'));
 server.get('/_ah/health', (req, res) => res.send('ok'));
 server.get('/_ah/start', (req, res) => res.send('ok'));
