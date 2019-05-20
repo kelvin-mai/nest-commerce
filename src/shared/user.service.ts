@@ -49,6 +49,9 @@ export class UserService {
   }
 
   sanitizeUser(user: User) {
-    return user.depopulate('password');
+    const sanitized = user.toObject();
+    delete sanitized['password'];
+    return sanitized;
+    // return user.depopulate('password');
   }
 }
